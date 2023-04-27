@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 /**
- * Clase con la funcion del tipo de conexion 
+ * Gestor de conexión a la bbdd
  * @author Raul 
  * @version 1.0
  * 
