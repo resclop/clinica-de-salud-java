@@ -14,7 +14,7 @@ public class DataBaseConnection {
 			this.connection = DriverManager.getConnection(connectionString, user, password);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} 
 		
 		return connection == null?false:true;
 	}

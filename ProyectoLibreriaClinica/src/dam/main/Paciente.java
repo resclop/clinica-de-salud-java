@@ -9,7 +9,7 @@ public class Paciente implements Queryable {
 	public Paciente(String nombre) {
 		super();
 		this.nombre = nombre; 
-	}
+	} 
 	@Override
 	public String getTabla() {return this.TABLA;}
 	

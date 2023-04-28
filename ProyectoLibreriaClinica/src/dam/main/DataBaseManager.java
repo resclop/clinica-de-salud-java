@@ -15,7 +15,7 @@ public class DataBaseManager {
  
 	private Connection connection = null;
 	private Statement statement;
-
+ 
 	public DataBaseManager(Connection connection) {		
 		this.connection = connection;
 		try {
