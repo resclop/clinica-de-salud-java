@@ -3,7 +3,7 @@ package dam.main;
 public class Paciente implements Queryable {
 	private final String TABLA="Paciente";
 	private final String FIELDS="";
-	private String nombre;
+	private String nombre; 
 	private int idPaciente;
 	public Paciente() {}
 	public Paciente(String nombre) {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class DataBaseManager {
-
+ 
 	private Connection connection = null;
 	private Statement statement;
 

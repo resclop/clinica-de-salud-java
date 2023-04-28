@@ -8,7 +8,7 @@ public class Diagnostico implements Queryable{
 	private int id_digfisio;
 	private int id_digPacient;
 	private String descripcion;
-	
+	 
 	public Diagnostico() {}
 
 	public Diagnostico(LocalDate fecha, int id_digfisio, int id_digPacient, String descripcion) {
