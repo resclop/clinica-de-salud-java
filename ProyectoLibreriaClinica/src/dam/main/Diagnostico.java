@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public class Diagnostico implements Queryable{
 	private final String TABLA= "Diagnostico";
 	private LocalDate fecha;
-	private int id_digfisio;
+	private int id_digfisio; 
 	private int id_digPacient;
 	private String descripcion; 
 	 
