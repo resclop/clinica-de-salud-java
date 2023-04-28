@@ -8,7 +8,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 /**
  * Gestor de conexión a la bbdd
- * @author Raul 
+ * @author Raul  
  * @version 1.0
  */
 public class DataBaseManager {

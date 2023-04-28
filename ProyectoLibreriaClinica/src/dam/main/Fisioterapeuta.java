@@ -5,7 +5,7 @@ public class Fisioterapeuta implements Queryable{
 	private int idFisio;
 	private String nombre;
 	private String especialidad;
-	private String localidad;
+	private String localidad; 
 	
 	public Fisioterapeuta() {
 	}

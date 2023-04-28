@@ -29,7 +29,7 @@ public class DataBaseConnection {
 	}
 	
 	public Connection getConnection () {
-		return this.connection;
+		return this.connection; 
 	}
 	
 	public boolean isConnected() {
