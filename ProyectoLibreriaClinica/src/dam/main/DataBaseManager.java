@@ -26,7 +26,6 @@ public class DataBaseManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
@@ -166,13 +165,13 @@ public class DataBaseManager {
 		}
 		peticion.substring(0, peticion.length()-1);
 		try {
-		for	(String key : filters.keySet()) {
-			whereData+= key+"=? AND ";
-		}
-		whereData = whereData.substring(0, whereData.length()-5);
+			for	(String key : filters.keySet()) {
+				whereData+= key+"=? AND ";
+			}
+			whereData = whereData.substring(0, whereData.length()-5);
 			PreparedStatement ps = this.connection.prepareStatement(peticion + " FROM " + 
 					table.getTabla() + " where " + whereData);
-			
+
 			for(Object filter: filters.values()) {
 				if (filter instanceof Integer) {
 					type = Types.INTEGER;
@@ -235,16 +234,16 @@ public class DataBaseManager {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Metodo para obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
 	 */
-	public ArrayList<Queryable> findOrderBy (Queryable table,ColumnOrder columnOrder, String... fields){
+	public ArrayList<Queryable> findOrderBy (Queryable table,ArrayList<String> fields,ColumnOrder... columnOrder){
 		ArrayList<Queryable> result=null;
 		Queryable datos=null;
 		String peticion = "SELECT ";
 		String orderBy = " ORDER BY ";
-		if (fields.length == 0) {
+		if (fields.size() == 0) {
 			peticion += "* ";
 		} else {
 			for(String field : fields) {
@@ -252,20 +251,28 @@ public class DataBaseManager {
 			}
 		}
 		peticion.substring(0, peticion.length()-1);
-		
+
 		try {
+			for (ColumnOrder column : columnOrder) {
+				orderBy+= column.getIndex() +" " +column.getOrder();
+			}
+			if (orderBy.length()>10) {
+				orderBy = orderBy.substring(0, orderBy.length()-1);
+			}
+
+
 			PreparedStatement ps = this.connection.prepareStatement(peticion + " FROM " + 
 					table.getTabla() + orderBy );
 			ResultSet rs = ps.executeQuery();					
 			while(rs.next()) {
 				if(table.getTabla().equals("Paciente")) {
 					datos = new Paciente();
-					for(int i=0;i<fields.length;i++) {
-						if(fields[i].toLowerCase().equals("idpaciente")) {
+					for(int i=0;i<fields.size();i++) {
+						if(fields.get(i).toLowerCase().equals("idpaciente")) {
 							((Paciente)datos).setIdPaciente(rs.getInt(i+1));
-						}else if(fields[i].toLowerCase().equals("nombre")) {
+						}else if(fields.get(i).toLowerCase().equals("nombre")) {
 							((Paciente)datos).setNombre(rs.getString(i+1));
-						}else if(fields[i].toLowerCase().equals("edad")) {
+						}else if(fields.get(i).toLowerCase().equals("edad")) {
 							((Paciente)datos).setEdad(rs.getInt(i+1));
 						}							
 					}
@@ -273,14 +280,14 @@ public class DataBaseManager {
 					if(((Paciente)datos).getIdPaciente()==0) continue;
 				} else if (table.getTabla().equals("Fisioterapeuta")) {
 					datos = new Fisioterapeuta();
-					for(int i=0;i<fields.length;i++) {
-						if(fields[i].toLowerCase().equals("idfisio")) {
+					for(int i=0;i<fields.size();i++) {
+						if(fields.get(i).toLowerCase().equals("idfisio")) {
 							((Fisioterapeuta)datos).setIdFisio(rs.getInt(i+1));
-						} else if (fields[i].toLowerCase().equals("nombre")){
+						} else if (fields.get(i).toLowerCase().equals("nombre")){
 							((Fisioterapeuta)datos).setNombre(rs.getString(i+1));
-						} else if (fields[i].toLowerCase().equals("especialidad")){
+						} else if (fields.get(i).toLowerCase().equals("especialidad")){
 							((Fisioterapeuta)datos).setEspecialidad(rs.getString(i+1));
-						}else if (fields[i].toLowerCase().equals("localidad")){
+						}else if (fields.get(i).toLowerCase().equals("localidad")){
 							((Fisioterapeuta)datos).setLocalidad(rs.getString(i+1));
 						}
 					}
@@ -288,14 +295,14 @@ public class DataBaseManager {
 					if(((Fisioterapeuta)datos).getIdFisio()==0) continue;
 				} else if (table.getTabla().equals("Diagnostico")) {
 					datos = new Diagnostico();
-					for(int i=0;i<fields.length;i++) {
-						if(fields[i].toLowerCase().equals("fecha")) {
+					for(int i=0;i<fields.size();i++) {
+						if(fields.get(i).toLowerCase().equals("fecha")) {
 							((Diagnostico)datos).setFecha(rs.getDate(i+1).toLocalDate());
-						} else if (fields[i].toLowerCase().equals("iddiagfisio")) {
+						} else if (fields.get(i).toLowerCase().equals("iddiagfisio")) {
 							((Diagnostico)datos).setIdDiagFisio(rs.getInt(i+1));
-						} else if (fields[i].toLowerCase().equals("iddiagpac")) {
+						} else if (fields.get(i).toLowerCase().equals("iddiagpac")) {
 							((Diagnostico)datos).setIdDiagPac(rs.getInt(i+1));
-						} else if (fields[i].toLowerCase().equals("descripcion")) {
+						} else if (fields.get(i).toLowerCase().equals("descripcion")) {
 							((Diagnostico)datos).setDescripcion(rs.getString(i+1));
 						}
 					}
@@ -314,33 +321,33 @@ public class DataBaseManager {
 	 */
 	public ArrayList<Queryable> updateValue (Queryable table){
 		ArrayList<Queryable> result=null;
-		Queryable datos=null;
 		String changes="";
+		boolean updated= false;
 		changes = "UPDATE ";
+		String where=" ";
+
+		//Sentencia-> UPDATE 'tabla' SET 'nuevoValor' WHERE 'key' = 'oldValue';
 		try {
-			PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM " + 
-					table.getTabla());
+			PreparedStatement ps = this.connection.prepareStatement(changes);
 			ResultSet rs = ps.executeQuery();					
 			while(rs.next()) {
 				if(table.getTabla().equals("Paciente")) {
-					datos = new Paciente();
-					((Paciente)datos).setIdPaciente(rs.getInt(1));
-					((Paciente)datos).setNombre(rs.getString(2));
-					((Paciente)datos).setEdad(rs.getInt(3));
-				} else if (table.getTabla().equals("Fisioterapeuta")) {
-					datos = new Fisioterapeuta();
-					((Fisioterapeuta)datos).setIdFisio(rs.getInt(1));
-					((Fisioterapeuta)datos).setNombre(rs.getString(2));
-					((Fisioterapeuta)datos).setEspecialidad(rs.getString(3));
-					((Fisioterapeuta)datos).setLocalidad(rs.getString(4));
-				} else if (table.getTabla().equals("Diagnostico")) {
-					datos = new Diagnostico();
-					((Diagnostico)datos).setFecha(rs.getDate(1).toLocalDate());
-					((Diagnostico)datos).setIdDiagFisio(rs.getInt(2));
-					((Diagnostico)datos).setIdDiagPac(rs.getInt(3));
-					((Diagnostico)datos).setDescripcion(rs.getString(4));
+					Paciente paciente = (Paciente)table;	
+					//se construye el WHERE
+					ArrayList<DataField> keys = (ArrayList<DataField>) paciente.getDataField().stream().filter(p->p.isPrimaryKey()).toList();
+					for(DataField key:keys) {
+						String comma = key.getFieldType().equals(Types.VARCHAR)?"'":"";										
+						where += key.getFieldName() + "=" + comma + key.getPropertyValue() +
+								comma + " AND ";
+					}
+					// Indicar el SET 
+					keys = (ArrayList<DataField>) paciente.getDataField().stream().filter(p->!p.isPrimaryKey()).toList();
+
+
+
+
+
 				}
-				result.add(datos);
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
@@ -356,7 +363,15 @@ public class DataBaseManager {
 	 */
 	public ArrayList<Queryable> add (Queryable table){
 		ArrayList<Queryable> result=null;
-		Queryable datos=null;
+		String query = "INSERT INTO " + table;
+
+
+
+
+
+
+
+
 
 		return null;
 	}
