@@ -18,7 +18,7 @@ public class DataBaseManager {
 
 	private Connection connection = null;
 	private Statement statement;
-
+	private PreparedStatement pStatement;
 	public DataBaseManager(Connection connection) {		
 		this.connection = connection;
 		try {
@@ -29,38 +29,25 @@ public class DataBaseManager {
 	}
 
 	/**
-	 * Método para consultar datos de cualquiera de las tablas de la bbdd
-	 * @param table se encarga de gestionar que la tabla pasada por parámetro tenga implementada 
-	 * la interfaz Queryable
-	 * @return Nulo en caso de no encontrar registros o de error
+	 * Método para obtener los datos de una tabla
+	 * @param table de la clase DataClass, se encarga de verificar la tabla de la que se extraen los datos
+	 * y al mismo tiempo en ese mismo objeto se irán almacenando los datos 
+	 * @return devuelve un arraylist de tipo DataClass con los resultados obtenidos del parámetro table introducido
 	 */
-	public ArrayList<Queryable> findAll(Queryable table){
-		ArrayList<Queryable> result=null;
-		Queryable datos=null;
+	public ArrayList<DataClass> findAll(DataClass table){
+		ArrayList<DataClass> result=new ArrayList<DataClass>();
 		try {
 			PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM " + 
 					table.getTabla());
 			ResultSet rs = ps.executeQuery();					
 			while(rs.next()) {
-				if(table.getTabla().equals("Paciente")) {
-					datos = new Paciente();
-					((Paciente)datos).setIdPaciente(rs.getInt(1));
-					((Paciente)datos).setNombre(rs.getString(2));
-					((Paciente)datos).setEdad(rs.getInt(3));
-				} else if (table.getTabla().equals("Fisioterapeuta")) {
-					datos = new Fisioterapeuta();
-					((Fisioterapeuta)datos).setIdFisio(rs.getInt(1));
-					((Fisioterapeuta)datos).setNombre(rs.getString(2));
-					((Fisioterapeuta)datos).setEspecialidad(rs.getString(3));
-					((Fisioterapeuta)datos).setLocalidad(rs.getString(4));
-				} else if (table.getTabla().equals("Diagnostico")) {
-					datos = new Diagnostico();
-					((Diagnostico)datos).setFecha(rs.getDate(1).toLocalDate());
-					((Diagnostico)datos).setIdDiagFisio(rs.getInt(2));
-					((Diagnostico)datos).setIdDiagPac(rs.getInt(3));
-					((Diagnostico)datos).setDescripcion(rs.getString(4));
+				ArrayList<DataField> fields = table.getDataField();
+				int i=1;
+				for(DataField field:fields) {
+					table.setPropertyValue(field.getPropertyName(), rs.getObject(i));
+					i++;
 				}
-				result.add(datos);
+				result.add(table);
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
@@ -238,9 +225,8 @@ public class DataBaseManager {
 	/**
 	 * Metodo para obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
 	 */
-	public ArrayList<Queryable> findOrderBy (Queryable table,ArrayList<String> fields,ColumnOrder... columnOrder){
-		ArrayList<Queryable> result=null;
-		Queryable datos=null;
+	public ArrayList<Queryable> findOrderBy (DataClass table,ArrayList<String> fields,ColumnOrder... columnOrder){
+		ArrayList<Queryable> result=new ArrayList<Queryable>();
 		String peticion = "SELECT ";
 		String orderBy = " ORDER BY ";
 		if (fields.size() == 0) {
@@ -265,51 +251,10 @@ public class DataBaseManager {
 					table.getTabla() + orderBy );
 			ResultSet rs = ps.executeQuery();					
 			while(rs.next()) {
-				if(table.getTabla().equals("Paciente")) {
-					datos = new Paciente();
-					for(int i=0;i<fields.size();i++) {
-						if(fields.get(i).toLowerCase().equals("idpaciente")) {
-							((Paciente)datos).setIdPaciente(rs.getInt(i+1));
-						}else if(fields.get(i).toLowerCase().equals("nombre")) {
-							((Paciente)datos).setNombre(rs.getString(i+1));
-						}else if(fields.get(i).toLowerCase().equals("edad")) {
-							((Paciente)datos).setEdad(rs.getInt(i+1));
-						}							
-					}
-					//validación de campo clave
-					if(((Paciente)datos).getIdPaciente()==0) continue;
-				} else if (table.getTabla().equals("Fisioterapeuta")) {
-					datos = new Fisioterapeuta();
-					for(int i=0;i<fields.size();i++) {
-						if(fields.get(i).toLowerCase().equals("idfisio")) {
-							((Fisioterapeuta)datos).setIdFisio(rs.getInt(i+1));
-						} else if (fields.get(i).toLowerCase().equals("nombre")){
-							((Fisioterapeuta)datos).setNombre(rs.getString(i+1));
-						} else if (fields.get(i).toLowerCase().equals("especialidad")){
-							((Fisioterapeuta)datos).setEspecialidad(rs.getString(i+1));
-						}else if (fields.get(i).toLowerCase().equals("localidad")){
-							((Fisioterapeuta)datos).setLocalidad(rs.getString(i+1));
-						}
-					}
-					//validación de campo clave
-					if(((Fisioterapeuta)datos).getIdFisio()==0) continue;
-				} else if (table.getTabla().equals("Diagnostico")) {
-					datos = new Diagnostico();
-					for(int i=0;i<fields.size();i++) {
-						if(fields.get(i).toLowerCase().equals("fecha")) {
-							((Diagnostico)datos).setFecha(rs.getDate(i+1).toLocalDate());
-						} else if (fields.get(i).toLowerCase().equals("iddiagfisio")) {
-							((Diagnostico)datos).setIdDiagFisio(rs.getInt(i+1));
-						} else if (fields.get(i).toLowerCase().equals("iddiagpac")) {
-							((Diagnostico)datos).setIdDiagPac(rs.getInt(i+1));
-						} else if (fields.get(i).toLowerCase().equals("descripcion")) {
-							((Diagnostico)datos).setDescripcion(rs.getString(i+1));
-						}
-					}
-					//validación de campo clave
-					if(((Diagnostico)datos).getFecha()==null) continue;
+				for(int i=0;i<fields.size();i++) {
+					((DataClass)table).setPropertyValue(fields.get(i), rs.getObject(i));
 				}
-				result.add(datos);
+				result.add(table);
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
@@ -319,71 +264,88 @@ public class DataBaseManager {
 	/**
 	 * Se debe poder modificar cualquiera de los registros de una tabla
 	 */
-	public ArrayList<Queryable> updateValue (Queryable table){
-		ArrayList<Queryable> result=null;
-		String changes="";
+	public boolean updateValue (DataClass table){
 		boolean updated= false;
-		changes = "UPDATE ";
 		String where=" ";
+		String set=" SET ";
 
-		//Sentencia-> UPDATE 'tabla' SET 'nuevoValor' WHERE 'key' = 'oldValue';
+		//se construye el WHERE
+		ArrayList<DataField> fields = (ArrayList<DataField>) table.getDataField().stream().filter(p->p.isPrimaryKey()).toList();
+		for(DataField field:fields) {
+			String comillas = field.getFieldType().equals(Types.VARCHAR)?"'":"";										
+			where += field.getFieldName() + "=" + comillas + field.getPropertyValue() +
+					comillas + " AND ";
+		}
+		where=where.substring(0,where.length()-5);
+		// Indicar el SET, se obtienen todos los campos que no son claves
+		// y que se van a usar en la cláusula SET
+		fields = (ArrayList<DataField>) table.getDataField().stream().filter(p->!p.isPrimaryKey()).toList();
+		for(DataField field:fields) {
+			String comillas = field.getFieldType().equals(Types.VARCHAR)?"'":"";
+			set+=field.getFieldName() + "=" + comillas +
+					field.getPropertyValue() + comillas + ",";
+
+		}
+
+		set=set.substring(0,set.length()-1);
+
 		try {
-			PreparedStatement ps = this.connection.prepareStatement(changes);
-			ResultSet rs = ps.executeQuery();					
-			while(rs.next()) {
-				if(table.getTabla().equals("Paciente")) {
-					Paciente paciente = (Paciente)table;	
-					//se construye el WHERE
-					ArrayList<DataField> keys = (ArrayList<DataField>) paciente.getDataField().stream().filter(p->p.isPrimaryKey()).toList();
-					for(DataField key:keys) {
-						String comma = key.getFieldType().equals(Types.VARCHAR)?"'":"";										
-						where += key.getFieldName() + "=" + comma + key.getPropertyValue() +
-								comma + " AND ";
-					}
-					// Indicar el SET 
-					keys = (ArrayList<DataField>) paciente.getDataField().stream().filter(p->!p.isPrimaryKey()).toList();
-
-
-
-
-
-				}
-			}
-		} catch (SQLException e) {			
+			this.pStatement = this.connection.prepareStatement("UPDATE " +  table.getTabla() +
+					set + where);
+			updated = this.pStatement.executeUpdate()>0;
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return result;
+		return updated;
 	}
 
 
 	/**
-	 * Método para añadir nuevos registros a una tabla, de uno en uno o varios
-	 * @param table
-	 * @return 
+	 * Método para añadir nuevos registros a una tabla, a través de la clase DataClass se obtiene cual
+	 * es la tabla y a través de la clase DataField el nombre de los campos y las propiedades
+	 * @param table 
+	 * @return added 
 	 */
-	public ArrayList<Queryable> add (Queryable table){
-		ArrayList<Queryable> result=null;
-		String query = "INSERT INTO " + table;
-
-
-
-
-
-
-
-
-
-		return null;
+	//INSERT INTO "nombreT" ("column1",..) values("...")
+	public boolean add (DataClass table){
+		boolean added = false;
+		String query = "";
+		ArrayList<DataField> fields= (ArrayList<DataField>) table.getDataField().stream().filter(p->!p.isPrimaryKey()).toList();
+		for(DataField field: fields) {
+			String comillas = field.getFieldType().equals(Types.VARCHAR)?"'":"";
+			query+=field.getFieldName() + " values " + comillas + field.getPropertyValue() + comillas;
+		}
+		try {
+			this.pStatement = this.connection.prepareStatement("INSERT INTO " +  table.getTabla() + " "+query);
+			added = this.pStatement.executeUpdate()>0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return added;
 	}
 	/**
-	 * método para eliminar registros de una tabla, de uno en uno o varios
+	 * Método para eliminar registros de una tabla
 	 * @param table
 	 * @return
 	 */
-	public ArrayList<Queryable> delete (Queryable table){
-		ArrayList<Queryable> result=null;
-		Queryable datos=null;
-
-		return null;
+	//DELETE FROM "nombreTabla" WHERE "column" = "value"
+	public boolean delete (DataClass table){
+		boolean deleted = false;
+		String where=" ";
+		ArrayList<DataField> fields = (ArrayList<DataField>) table.getDataField().stream().filter(p->p.isPrimaryKey()).toList();
+		for(DataField field:fields) {
+			String comillas = field.getFieldType().equals(Types.VARCHAR)?"'":"";										
+			where += field.getFieldName() + "=" + comillas + field.getPropertyValue() +
+					comillas + " AND ";
+		}
+		where=where.substring(0,where.length()-5);
+		try {
+			this.pStatement = this.connection.prepareStatement("DELETE FROM " +  table.getTabla() +
+					 where);
+			deleted = this.pStatement.executeUpdate()>0;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return deleted;
 	}
 }

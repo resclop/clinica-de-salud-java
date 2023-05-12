@@ -1,6 +1,7 @@
 package dam.main;
 
 import java.sql.Types;
+import java.time.LocalDate;
 
 public class DataField {
 	private String fieldName;
@@ -8,6 +9,7 @@ public class DataField {
 	private Object propertyValue;
 	private boolean primaryKey;
 	private Types fieldType;
+	
 	public DataField(String fieldName, String propertyName, Object propertyValue, Types fieldType) {	
 		this.fieldName = fieldName;
 		this.propertyName = propertyName;
@@ -15,6 +17,7 @@ public class DataField {
 		this.primaryKey = false;
 		this.fieldType = fieldType;
 	}
+	
 	public DataField(String fieldName, String propertyName, Object propertyValue, Types fieldType, boolean primaryKey) {	
 		this(fieldName,propertyName,propertyValue,fieldType);
 		this.primaryKey = primaryKey;
@@ -37,6 +40,8 @@ public class DataField {
 			return Integer.valueOf(this.propertyValue.toString());
 		if(this.fieldType.equals(Types.VARCHAR))
 			return this.propertyValue.toString();
+		if(this.fieldType.equals(Types.DATE))
+			return null;
 		return null;
 	}
 	public void setPropertyValue(Object propertyValue) {

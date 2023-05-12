@@ -3,33 +3,25 @@ package dam.main;
 import java.sql.Types;
 import java.util.ArrayList;
 
-public class Paciente implements Queryable {
-	private final String TABLA="Paciente"; 
+public class Paciente extends DataClass {
+	private static final String TABLA = "Paciente";	
 	private int idPaciente;
 	private String nombre;
 	private int edad;
-	private ArrayList<DataField> dataFields;
-	private Types type;
 	
-	public Paciente() {}
-	public Paciente(int idPaciente, String nombre, int edad) {		
+	private Types type;
+	public Paciente() {super(TABLA);}
+	
+	public Paciente(int idPaciente, String nombre, int edad) {	
+		super(TABLA);
 		this.idPaciente = idPaciente;
 		this.nombre = nombre; 
 		this.edad = edad;
-		this.dataFields = new ArrayList<DataField>();
-		// TO DO: Añadir el tipo al constructor de dataFields
-		this.dataFields.add(new DataField("id_paciente","idPaciente", this.idPaciente, null, true));
-		this.dataFields.add(new DataField("nombre","nombre", this.nombre, null));
-		this.dataFields.add(new DataField("edad","edad", this.edad, null));
 	} 
 	
 	@Override
 	public String getTabla() {return this.TABLA;}
-	
 
-	public ArrayList<DataField> getDataField() {
-		return this.dataFields;
-	}
 	
 	public String getNombre() {
 		return nombre;

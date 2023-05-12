@@ -1,26 +1,80 @@
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (1, 'Juan', 'Neurología', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (2, 'Pedro', 'Neurología', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (3, 'Luisa', 'Neurología', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (4, 'Jesus', 'Neurología', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (5, 'Marcos', 'Traumatología', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (6, 'Amdrea', 'Traumatología', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (7, 'Ainara', 'Traumatología', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (8, 'Amaia', 'Traumatología', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (9, 'Mariona', 'Pediatría', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (10, 'Clara', 'Pediatría', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (11, 'Alex', 'Pediatría', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (12, 'Rafa', 'Pediatría', 'Sevilla');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (13, 'Paul', 'Respiratorio', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (14, 'Jose', 'Respiratorio', 'Córdoba');
+insert into Fisioterapeuta (id_fisio, nombre, especialidad, localidad) values (15, 'Anne', 'Respiratorio', 'Córdoba');
 
-create table Fisioterapeuta(
-id_fisio int primary key,
-nombre varchar(30),
-especialidad varchar (35),
-localidad varchar (30),
-constraint chk_especialidad check (especialidad='Traumatología' or especialidad='Neurología'),
-constraint chk_localidad check (localidad='Sevilla' or localidad='Córdoba')
-);
+insert into Paciente (id_paciente, nombre, edad) values (1, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (2, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (3, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (4, 'Sergio','22');
+insert into Paciente (id_paciente, nombre, edad) values (5, 'Alberto','32');
+insert into Paciente (id_paciente, nombre, edad) values (6, 'Manuel','29');
+insert into Paciente (id_paciente, nombre, edad) values (7, 'Francisco','15');
+insert into Paciente (id_paciente, nombre, edad) values (8, 'Antonio','18');
+insert into Paciente (id_paciente, nombre, edad) values (9, 'Amparo','24');
+insert into Paciente (id_paciente, nombre, edad) values (10, 'Angela','24');
+insert into Paciente (id_paciente, nombre, edad) values (12, 'Adela','44');
+insert into Paciente (id_paciente, nombre, edad) values (13, 'John','34');
+insert into Paciente (id_paciente, nombre, edad) values (14, 'Lola','55');
+insert into Paciente (id_paciente, nombre, edad) values (15, 'Saul','65');
+insert into Paciente (id_paciente, nombre, edad) values (16, 'Carlos','22');
+insert into Paciente (id_paciente, nombre, edad) values (17, 'Sandra','25');
+insert into Paciente (id_paciente, nombre, edad) values (18, 'Selena','35');
+insert into Paciente (id_paciente, nombre, edad) values (19, 'Lion','19');
+insert into Paciente (id_paciente, nombre, edad) values (20, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (21, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (22, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (23, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (24, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (25, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (26, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (27, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (28, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (29, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (30, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (31, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (32, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (33, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (34, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (35, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (36, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (37, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (38, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (39, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (40, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (41, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (42, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (43, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (44, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (45, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (46, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (47, 'Ares','25');
+insert into Paciente (id_paciente, nombre, edad) values (48, 'Andres','35');
+insert into Paciente (id_paciente, nombre, edad) values (49, 'Aurora','19');
+insert into Paciente (id_paciente, nombre, edad) values (50, 'Ares','25');
 
-create table Paciente(
-id_paciente int primary key,
-nombre varchar(30),
-edad int,
-constraint chk_edad check (edad>0)
-);
 
-create table diagnostica(
-fecha date primary key,
-id_digfisio int,
-id_digPacient int,
-descripcion varchar(200) not null,
-constraint fk_digFisio foreign key (id_digfisio) references Fisioterapeuta(id_fisio),
-constraint fk_digPacient foreign key (id_digPacient) references Paciente (id_paciente),
-constraint chk_fecha check (fecha<'2024-01-01' and fecha>'2022-01-01')
-);
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-02-05',1,1,'Accidente de tráfico, molestia en L5');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-03-10',2,3,'Código ICTUS, hemiplejía hemisferio izquierdo');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-22',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-03-23',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-04-22',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-02-22',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-12',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-21',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-11',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-31',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-22',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-22',3,2,'Post-Operatorio fractura radio-derecho');
+insert into diagnostica (fecha, id_digfisio, id_digPacient, descripcion) values ('2023-01-22',3,2,'Post-Operatorio fractura radio-derecho');

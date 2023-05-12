@@ -1,18 +1,21 @@
 package dam.main;
 
+import java.sql.Types;
 import java.time.LocalDate;
 
-public class Diagnostico implements Queryable{
-	private final String TABLA= "Diagnostico";
+public class Diagnostico extends DataClass{
+	private static final String TABLA= "Diagnostico";
 	private LocalDate fecha;
 	private int idDiagFisio; 
 	private int idDiagPac;
 	private String descripcion; 
-	 
-	public Diagnostico() {}  
+	private Types type;
+	//TODO pasar al constructor de la clase base el nombre de la tabla correspondiente 
+	public Diagnostico() {super(TABLA);}  
 
 	public Diagnostico(LocalDate fecha, int idDiagFisio, int idDiagPac, String descripcion) {
-		super();
+		//TODO pasar al constructor de la clase base el nombre de la tabla correspondiente
+		super(TABLA);
 		this.fecha = fecha;
 		this.idDiagFisio = idDiagFisio;
 		this.idDiagPac = idDiagPac;

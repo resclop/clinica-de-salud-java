@@ -1,16 +1,19 @@
 package dam.main;
 
-public class Fisioterapeuta implements Queryable{
-	private final String TABLA="Fisioterapeuta";
+import java.sql.Types;
+
+public class Fisioterapeuta extends DataClass{
+	private static final String TABLA="Fisioterapeuta";
 	private int idFisio;
 	private String nombre;
 	private String especialidad;
-	private String localidad; 
+	private String localidad;
+	private Types type;
 	
-	public Fisioterapeuta() {
-	} 
+	public Fisioterapeuta() {super(TABLA);} 
 
 	public Fisioterapeuta(int idFisio, String nombre, String especialidad, String localidad) {
+		super(TABLA);
 		this.idFisio = idFisio; 
 		this.nombre = nombre;
 		this.especialidad = especialidad;
