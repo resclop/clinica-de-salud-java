@@ -1,6 +1,7 @@
 package dam.main;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,12 @@ public class DataBaseManager {
 	private Connection connection = null;
 	private Statement statement;
 	private PreparedStatement pStatement;
+	private DataBaseConnection dataBaseConnection;
+	
+	public DataBaseManager(DataBaseConnection connection) {
+		this.dataBaseConnection = connection;
+	}
+	
 	public DataBaseManager(Connection connection) {		
 		this.connection = connection;
 		try {
@@ -35,9 +42,12 @@ public class DataBaseManager {
 	 * @return devuelve un arraylist de tipo DataClass con los resultados obtenidos del parámetro table introducido
 	 */
 	public ArrayList<DataClass> findAll(DataClass table){
+		Connection connection = null;
 		ArrayList<DataClass> result=new ArrayList<DataClass>();
 		try {
-			PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM " + 
+			connection=DriverManager.getConnection(this.dataBaseConnection.getConnectionString());
+			this.dataBaseConnection.connect(connection);
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM " + 
 					table.getTabla());
 			ResultSet rs = ps.executeQuery();					
 			while(rs.next()) {
@@ -51,6 +61,8 @@ public class DataBaseManager {
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
+		} finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return result;
 	}
@@ -62,6 +74,7 @@ public class DataBaseManager {
 	 * @return devuelve una ArrayList con los datos extraidos de la bbdd
 	 */
 	public ArrayList<Queryable> findAll(Queryable table, String...fields){
+		Connection connection = null;
 		ArrayList<Queryable> result=null;
 		Queryable datos=null;
 		String peticion = "SELECT ";
@@ -74,6 +87,8 @@ public class DataBaseManager {
 		}
 		peticion.substring(0, peticion.length()-1);
 		try {
+			connection=DriverManager.getConnection(this.dataBaseConnection.getConnectionString());
+			this.dataBaseConnection.connect(connection);
 			PreparedStatement ps = this.connection.prepareStatement(peticion + " FROM " + 
 					table.getTabla());
 			ResultSet rs = ps.executeQuery();					
@@ -126,6 +141,8 @@ public class DataBaseManager {
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return result;
 	}
@@ -138,6 +155,7 @@ public class DataBaseManager {
 	 * @return devuelve una ArrayList con los datos extraidos de la bbdd
 	 */
 	public ArrayList<Queryable> findAllBy(Queryable table, HashMap<String, Object> filters, String...fields){
+		Connection connection = null;
 		ArrayList<Queryable> result=null;
 		Queryable datos=null;
 		int type, j=0;
@@ -156,6 +174,8 @@ public class DataBaseManager {
 				whereData+= key+"=? AND ";
 			}
 			whereData = whereData.substring(0, whereData.length()-5);
+			connection=DriverManager.getConnection(this.dataBaseConnection.getConnectionString());
+			this.dataBaseConnection.connect(connection);
 			PreparedStatement ps = this.connection.prepareStatement(peticion + " FROM " + 
 					table.getTabla() + " where " + whereData);
 
@@ -218,6 +238,8 @@ public class DataBaseManager {
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return result;
 	}
@@ -226,6 +248,7 @@ public class DataBaseManager {
 	 * Metodo para obtener los datos de una consulta de manera ordenada por alguno de los campos seleccionados
 	 */
 	public ArrayList<Queryable> findOrderBy (DataClass table,ArrayList<String> fields,ColumnOrder... columnOrder){
+		Connection connection = null;
 		ArrayList<Queryable> result=new ArrayList<Queryable>();
 		String peticion = "SELECT ";
 		String orderBy = " ORDER BY ";
@@ -246,7 +269,8 @@ public class DataBaseManager {
 				orderBy = orderBy.substring(0, orderBy.length()-1);
 			}
 
-
+			connection=DriverManager.getConnection(this.dataBaseConnection.getConnectionString());
+			this.dataBaseConnection.connect(connection);
 			PreparedStatement ps = this.connection.prepareStatement(peticion + " FROM " + 
 					table.getTabla() + orderBy );
 			ResultSet rs = ps.executeQuery();					
@@ -258,6 +282,8 @@ public class DataBaseManager {
 			}
 		} catch (SQLException e) {			
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return result;
 	}
@@ -265,6 +291,7 @@ public class DataBaseManager {
 	 * Se debe poder modificar cualquiera de los registros de una tabla
 	 */
 	public boolean updateValue (DataClass table){
+		Connection connection = null;
 		boolean updated= false;
 		String where=" ";
 		String set=" SET ";
@@ -295,6 +322,8 @@ public class DataBaseManager {
 			updated = this.pStatement.executeUpdate()>0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return updated;
 	}
@@ -308,6 +337,7 @@ public class DataBaseManager {
 	 */
 	//INSERT INTO "nombreT" ("column1",..) values("...")
 	public boolean add (DataClass table){
+		Connection connection = null;
 		boolean added = false;
 		String query = "";
 		ArrayList<DataField> fields= (ArrayList<DataField>) table.getDataField().stream().filter(p->!p.isPrimaryKey()).toList();
@@ -320,6 +350,8 @@ public class DataBaseManager {
 			added = this.pStatement.executeUpdate()>0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return added;
 	}
@@ -330,6 +362,7 @@ public class DataBaseManager {
 	 */
 	//DELETE FROM "nombreTabla" WHERE "column" = "value"
 	public boolean delete (DataClass table){
+		Connection connection = null;
 		boolean deleted = false;
 		String where=" ";
 		ArrayList<DataField> fields = (ArrayList<DataField>) table.getDataField().stream().filter(p->p.isPrimaryKey()).toList();
@@ -340,11 +373,15 @@ public class DataBaseManager {
 		}
 		where=where.substring(0,where.length()-5);
 		try {
+			connection=DriverManager.getConnection(this.dataBaseConnection.getConnectionString());
+			this.dataBaseConnection.connect(connection);
 			this.pStatement = this.connection.prepareStatement("DELETE FROM " +  table.getTabla() +
 					 where);
 			deleted = this.pStatement.executeUpdate()>0;
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			this.dataBaseConnection.disconnect();
 		}
 		return deleted;
 	}

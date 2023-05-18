@@ -6,22 +6,30 @@ import java.sql.SQLException;
 
 public class DataBaseConnection {
 
+	// Para poder gestionar la conexion
 	private Connection connection;
+	// Para guardar la cadena de conexion que va a usar la conexion
+	private String connectionString;
 	
-	public boolean connect(String connectionString, String user, String password) {
+	public DataBaseConnection(String connectionString) {
+		this.connectionString = connectionString;
 		try {
 			DriverManager.registerDriver(new com.mysql.cj.jdbc.Driver());
-			this.connection = DriverManager.getConnection(connectionString, user, password);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} 
-		
+		}
+	}
+	
+	
+	public boolean connect(Connection connection) {
+		this.connection=connection;
 		return connection == null?false:true;
 	}
 	
 	public boolean disconnect() {
 		try {
 			this.connection.close();
+			this.connectionString="";
 			return true;
 		} catch (SQLException e) {
 			return false;
@@ -41,5 +49,8 @@ public class DataBaseConnection {
 		}
 	}
 	
+	public String getConnectionString() {
+		return this.connectionString;
+	}
 	
 }
