@@ -4,12 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Clase que contiene métodos para establecer la conexión, iniciarla y detenerla, además de registrar el driver
+ * y guardar la cadena de conexion que se usará
+ * @author Raul
+ * @version 1.0
+ */
 public class DataBaseConnection {
 
 	// Para poder gestionar la conexion
 	private Connection connection;
 	// Para guardar la cadena de conexion que va a usar la conexion
 	private String connectionString;
+	
 	
 	public DataBaseConnection(String connectionString) {
 		this.connectionString = connectionString;
@@ -29,7 +36,6 @@ public class DataBaseConnection {
 	public boolean disconnect() {
 		try {
 			this.connection.close();
-			this.connectionString="";
 			return true;
 		} catch (SQLException e) {
 			return false;

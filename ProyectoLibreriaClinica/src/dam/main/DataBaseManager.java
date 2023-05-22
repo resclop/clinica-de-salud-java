@@ -9,9 +9,25 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+
 /**
  * Gestor de conexión a la bbdd, contiene métodos para realizar el filtrado, la selección de columnas, 
- * la modificación, borrado o añadido de datos...
+ * la modificación, borrado o añadido de datos... además de la exportación e importación XML
  * @author Raul  
  * @version 1.0
  */
@@ -311,9 +327,7 @@ public class DataBaseManager {
 			String comillas = field.getFieldType().equals(Types.VARCHAR)?"'":"";
 			set+=field.getFieldName() + "=" + comillas +
 					field.getPropertyValue() + comillas + ",";
-
 		}
-
 		set=set.substring(0,set.length()-1);
 
 		try {
@@ -328,14 +342,12 @@ public class DataBaseManager {
 		return updated;
 	}
 
-
 	/**
 	 * Método para añadir nuevos registros a una tabla, a través de la clase DataClass se obtiene cual
 	 * es la tabla y a través de la clase DataField el nombre de los campos y las propiedades
 	 * @param table 
 	 * @return added 
 	 */
-	//INSERT INTO "nombreT" ("column1",..) values("...")
 	public boolean add (DataClass table){
 		Connection connection = null;
 		boolean added = false;
@@ -356,11 +368,10 @@ public class DataBaseManager {
 		return added;
 	}
 	/**
-	 * Método para eliminar registros de una tabla
+	 * Método para eliminar registros de una tabla, una vez finalizado, se cierra la conexion
 	 * @param table
 	 * @return
 	 */
-	//DELETE FROM "nombreTabla" WHERE "column" = "value"
 	public boolean delete (DataClass table){
 		Connection connection = null;
 		boolean deleted = false;
@@ -384,5 +395,52 @@ public class DataBaseManager {
 			this.dataBaseConnection.disconnect();
 		}
 		return deleted;
+	}
+	
+	/**
+	 * Lógica del método para exportar el XML, sin terminar
+	 * @return
+	 */
+	public boolean exportXml() {
+		try {
+			Document document = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder().newDocument();
+			// Debe de ir el nombre de la tabla 
+			Element raiz = document.createElement("");
+			Element children = document.createElement("");
+			Element nombre = document.createElement("");
+			nombre.appendChild(document.createTextNode("Texto"));
+			children.appendChild(nombre);
+			raiz.appendChild(children);
+			document.appendChild(raiz);
+			Transformer transformer = TransformerFactory.newDefaultInstance().newTransformer();
+			transformer.transform(new DOMSource(document), new StreamResult(new FileWriter("resultado.xml")));
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * lógica del método para importar el XML sin terminar
+	 * @return
+	 */
+	public boolean importXml() {
+		try {
+			Document document = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder()
+					.parse(new FileInputStream(""));
+			Element raiz = document.getDocumentElement();
+			for (int i = 0; i < raiz.getChildNodes().getLength(); i++) {
+				Node node = raiz.getChildNodes().item(i);
+				if (node.getNodeType()== Node.ELEMENT_NODE) {
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
 	}
 }

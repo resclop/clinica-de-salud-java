@@ -1,15 +1,14 @@
 package dam.main;
 
 import java.sql.Types;
-import java.util.ArrayList;
 
 public class Paciente extends DataClass {
 	private static final String TABLA = "Paciente";	
 	private int idPaciente;
 	private String nombre;
 	private int edad;
-	
 	private Types type;
+	
 	public Paciente() {super(TABLA);}
 	
 	public Paciente(int idPaciente, String nombre, int edad) {	
@@ -41,4 +40,6 @@ public class Paciente extends DataClass {
 	public void setEdad(int edad) {
 		this.edad = edad;
 	}
+	
+	
 }

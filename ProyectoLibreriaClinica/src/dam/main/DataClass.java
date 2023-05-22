@@ -1,7 +1,11 @@
 package dam.main;
 
 import java.util.ArrayList;
-
+/**
+ * 
+ * @author raul
+ *
+ */
 public class DataClass implements Queryable{
 	private ArrayList<DataField> dataFields;
 	private DataClass dataClass;
@@ -15,11 +19,12 @@ public class DataClass implements Queryable{
 	/**
 	 * Este método se encarga de establecer la relacion a través de la clase DataField el nombre de las columnas 
 	 * de cada clase con el nombre de las propiedades
-	 * @param dataClass
+	 * @param dataClass parametro que contiene el nombre de la tabla
 	 */
 	// TODO: falta solventar el problema con el tipo de dato
 	private void setDataFields(DataClass dataClass) {
 		this.dataFields = new ArrayList<DataField>();
+		// Si el parametro introducido es instancia de Paciente, se añadirán los datos de sus columnas en el arraylist
 		if(dataClass instanceof Paciente) {		
 			Paciente paciente = (Paciente) dataClass;
 			this.dataFields.add(new DataField("id_paciente","idPaciente", paciente.getIdPaciente(), null, true));
@@ -95,4 +100,12 @@ public class DataClass implements Queryable{
 			}
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "DataClass [dataFields=" + dataFields + ", dataClass=" + dataClass + ", tableName=" + tableName + "]";
+	}
+	
+	
+	
 }
